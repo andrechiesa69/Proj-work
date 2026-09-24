@@ -1,45 +1,91 @@
 <!DOCTYPE html>
 <html lang="it">
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Realtà Aumentata - MindAR</title>
-  <!-- A-Frame Library -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <!-- MindAR Image Tracking Library -->
-  <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.2/dist/mindar-image-aframe.prod.js"></script>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-    }
-  </style>
-</head>
-<body>
-  <!-- Configurazione della scena AR. 'imageTargetSrc' punta al tuo file targets.mind -->
-  <a-scene 
-    mindar-image="imageTargetSrc: ./targets.mind;" 
-    color-space="sRGB" 
-    renderer="colorManagement: true, physicallyCorrectLights" 
-    vr-mode-ui="enabled: false" 
-    device-orientation-permission-ui="enabled: false">
-    
-    <a-assets>
-      <!-- Puoi sostituire questo oggetto 3D con un tuo file .gltf o .glb -->
-      <a-asset-item id="avatarModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.2/examples/image-tracking/assets/card-example/softmind/scene.gltf"></a-asset-item>
-    </a-assets>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gedinfo Piacenza - AR Experience</title>
+    <!-- Libreria A-Frame -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <!-- Libreria MindAR per la Realtà Aumentata via Immagine Target -->
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      /* Stile per le istruzioni a schermo prima della scansione */
+      #scanning-overlay {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.7);
+        color: #ffffff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        z-index: 9999;
+        text-align: center;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Messaggio di sovrapposizione all'apertura -->
+    <div id="scanning-overlay">Inquadra il logo Gedinfo per attivare l'AR</div>
 
-    <!-- Target 0: quando la fotocamera riconosce l'immagine target del file .mind -->
-    <a-entity mindar-image-target="targetIndex: 0">
-      <!-- Modello 3D o elemento visibile sopra l'immagine target -->
-      <a-gltf-model 
-        rotation="0 0 0" 
-        position="0 0 0.1" 
-        scale="0.005 0.005 0.005" 
-        src="#avatarModel">
-      </a-gltf-model>
-    </a-entity>
-  </a-scene>
-</body>
+    <!-- Scena AR -->
+    <a-scene
+      mindar-image="imageTargetSrc: ./targets.mind;"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+    >
+      <a-assets>
+        <!-- eventuale risorsa immagine per il pulsante 3D -->
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse" raycaster="far: 10000; objects: .clickable"></a-camera>
+
+      <!-- Target associato al file targets.mind -->
+      <a-entity mindar-image-target="targetIndex: 0">
+        
+        <!-- Piano/Pulsante AR in sovrapposizione sopra il logo -->
+        <a-plane
+          class="clickable"
+          id="ar-button"
+          position="0 0 0"
+          height="0.5"
+          width="1.2"
+          color="#0055A5"
+          material="opacity: 0.9; transparent: true"
+          rotation="0 0 0"
+        >
+          <!-- Testo informativo sul pulsante -->
+          <a-text
+            value="Vai al sito Gedinfo"
+            align="center"
+            color="#FFFFFF"
+            width="3"
+            position="0 0 0.01"
+          ></a-text>
+        </a-plane>
+
+      </a-entity>
+    </a-scene>
+
+    <script>
+      // Gestione del click sull'elemento AR
+      document.addEventListener("DOMContentLoaded", () => {
+        const arButton = document.querySelector("#ar-button");
+        
+        arButton.addEventListener("click", () => {
+          // Reindirizzamento al sito ufficiale di Gedinfo Piacenza
+          window.location.href = "https://www.gedinfo.it/";
+        });
+      });
+    </script>
+  </body>
 </html>
