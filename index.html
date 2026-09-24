@@ -45,7 +45,7 @@
         opacity: 0.85;
       }
 
-      /* CONTAINER MIRINO */
+      /* CONTAINER MIRINO PERSONALIZZATO */
       #custom-scanner {
         position: absolute;
         top: 50%;
@@ -58,7 +58,7 @@
         box-sizing: border-box;
       }
 
-      /* ANGOLI BIANCHI */
+      /* ANGOLI BIANCHI DEL MIRINO */
       .corner {
         position: absolute;
         width: 35px;
@@ -91,7 +91,7 @@
         border-width: 0 4px 4px 0;
       }
 
-      /* BARRA LASER SCORREVOLE VIVIDA (AZZURRO BRILLANTE) */
+      /* BARRA LASER AZZURRA CHE SCORRE SU E GIÙ */
       .scan-line {
         position: absolute;
         left: 0;
@@ -120,13 +120,13 @@
     </style>
   </head>
   <body>
-    <!-- Banner in alto -->
+    <!-- Banner informativo in alto -->
     <div id="header-banner">
       <h1>GEDINFO PIACENZA</h1>
       <p>Realtà Aumentata Ufficiale</p>
     </div>
 
-    <!-- Mirino con Angoli e Barra Laser -->
+    <!-- Mirino con angoli bianchi e barra di scansione -->
     <div id="custom-scanner">
       <div class="corner top-left"></div>
       <div class="corner top-right"></div>
@@ -135,7 +135,7 @@
       <div class="scan-line"></div>
     </div>
 
-    <!-- Scena AR -->
+    <!-- Scena Realtà Aumentata -->
     <a-scene
       mindar-image="imageTargetSrc: ./targets.mind; uiLoading: no; uiError: no; uiScanning: no;"
       color-space="sRGB"
@@ -143,27 +143,24 @@
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
     >
+      <a-assets>
+        <!-- Caricamento risorsa immagine PNG con trasparenza abilitata -->
+        <img id="gedi-logo-img" src="./Gedi OK.png" />
+      </a-assets>
+
       <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse" raycaster="far: 10000; objects: .clickable"></a-camera>
 
       <a-entity id="target-entity" mindar-image-target="targetIndex: 0">
-        <!-- Pulsante 3D -->
-        <a-plane
+        <!-- Elemento AR: Immagine del Logo Gedinfo Cliccabile -->
+        <a-image
           class="clickable"
           id="ar-button"
+          src="#gedi-logo-img"
           position="0 0 0"
-          height="0.45"
-          width="1.15"
-          color="#0055A5"
-          material="opacity: 0.95; transparent: true"
-        >
-          <a-text
-            value="Vai al sito Gedinfo"
-            align="center"
-            color="#FFFFFF"
-            width="2.6"
-            position="0 0 0.01"
-          ></a-text>
-        </a-plane>
+          height="1"
+          width="1"
+          material="transparent: true; alphaTest: 0.5"
+        ></a-image>
       </a-entity>
     </a-scene>
 
@@ -173,16 +170,17 @@
         const customScanner = document.querySelector("#custom-scanner");
         const targetEntity = document.querySelector("#target-entity");
 
-        // Quando il logo viene riconosciuto, nasconde il mirino
+        // Quando il logo viene riconosciuto, nasconde il mirino di scansione
         targetEntity.addEventListener("targetFound", () => {
           if (customScanner) customScanner.style.display = "none";
         });
 
-        // Quando si perde il logo, mostra di nuovo il mirino
+        // Quando si perde la vista del logo, riattiva il mirino
         targetEntity.addEventListener("targetLost", () => {
           if (customScanner) customScanner.style.display = "block";
         });
 
+        // Cliccando sull'immagine in Realtà Aumentata si apre il sito Gedinfo
         if (arButton) {
           arButton.addEventListener("click", () => {
             window.location.href = "https://www.gedinfo.it/";
