@@ -45,7 +45,7 @@
         opacity: 0.85;
       }
 
-      /* MIRINO PERSONALIZZATO (4 ANGOLI BIANCHI) */
+      /* MIRINO PERSONALIZZATO (ANGOLI BIANCHI + BARRA SCORREVOLE) */
       #custom-scanner {
         position: absolute;
         top: 50%;
@@ -89,6 +89,33 @@
         right: 0;
         border-width: 0 4px 4px 0;
       }
+
+      /* BARRA ORIZZONTALE CHE SCORRE SU E GIÙ */
+      .scan-line {
+        position: absolute;
+        left: 5%;
+        width: 90%;
+        height: 4px;
+        background: #ffffff;
+        box-shadow: 0 0 8px #ffffff;
+        border-radius: 2px;
+        animation: scanAnim 2s infinite ease-in-out;
+      }
+
+      @keyframes scanAnim {
+        0% {
+          top: 10px;
+          opacity: 0.8;
+        }
+        50% {
+          top: calc(100% - 14px);
+          opacity: 1;
+        }
+        100% {
+          top: 10px;
+          opacity: 0.8;
+        }
+      }
     </style>
   </head>
   <body>
@@ -98,12 +125,13 @@
       <p>Realtà Aumentata Ufficiale</p>
     </div>
 
-    <!-- Frame di scansione grafico (Angoli Bianchi) -->
+    <!-- Frame di scansione grafico completo di barra laser -->
     <div id="custom-scanner">
       <div class="corner top-left"></div>
       <div class="corner top-right"></div>
       <div class="corner bottom-left"></div>
       <div class="corner bottom-right"></div>
+      <div class="scan-line"></div>
     </div>
 
     <!-- Scena AR -->
@@ -144,12 +172,12 @@
         const customScanner = document.querySelector("#custom-scanner");
         const targetEntity = document.querySelector("#target-entity");
 
-        // Nasconde il mirino quando il logo viene rilevato
+        // Nasconde il mirino e la barra quando il logo viene riconosciuto
         targetEntity.addEventListener("targetFound", () => {
           customScanner.style.display = "none";
         });
 
-        // Mostra di nuovo il mirino se si perde il logo
+        // Mostra di nuovo il mirino se si perde la vista del logo
         targetEntity.addEventListener("targetLost", () => {
           customScanner.style.display = "block";
         });
