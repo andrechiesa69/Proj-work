@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Realtà Aumentata - MindAR</title>
+  <!-- A-Frame Library -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <!-- MindAR Image Tracking Library -->
+  <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <!-- Configurazione della scena AR. 'imageTargetSrc' punta al tuo file targets.mind -->
+  <a-scene 
+    mindar-image="imageTargetSrc: ./targets.mind;" 
+    color-space="sRGB" 
+    renderer="colorManagement: true, physicallyCorrectLights" 
+    vr-mode-ui="enabled: false" 
+    device-orientation-permission-ui="enabled: false">
+    
+    <a-assets>
+      <!-- Puoi sostituire questo oggetto 3D con un tuo file .gltf o .glb -->
+      <a-asset-item id="avatarModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.2/examples/image-tracking/assets/card-example/softmind/scene.gltf"></a-asset-item>
+    </a-assets>
+
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <!-- Target 0: quando la fotocamera riconosce l'immagine target del file .mind -->
+    <a-entity mindar-image-target="targetIndex: 0">
+      <!-- Modello 3D o elemento visibile sopra l'immagine target -->
+      <a-gltf-model 
+        rotation="0 0 0" 
+        position="0 0 0.1" 
+        scale="0.005 0.005 0.005" 
+        src="#avatarModel">
+      </a-gltf-model>
+    </a-entity>
+  </a-scene>
+</body>
+</html>
