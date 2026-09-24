@@ -14,7 +14,7 @@
         overflow: hidden;
       }
 
-      /* Banner di intestazione personalizzato in alto */
+      /* Intestazione in alto */
       #header-banner {
         position: absolute;
         top: 15px;
@@ -22,45 +22,93 @@
         transform: translateX(-50%);
         background: rgba(10, 35, 60, 0.85);
         color: #ffffff;
-        padding: 12px 24px;
-        border-radius: 16px;
+        padding: 10px 20px;
+        border-radius: 14px;
         font-family: Arial, sans-serif;
         text-align: center;
         z-index: 9999;
         box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         pointer-events: none;
-        min-width: 220px;
+        width: 80%;
+        max-width: 280px;
       }
 
       #header-banner h1 {
         margin: 0;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: bold;
-        letter-spacing: 0.5px;
       }
 
       #header-banner p {
-        margin: 4px 0 0 0;
-        font-size: 12px;
+        margin: 3px 0 0 0;
+        font-size: 11px;
         opacity: 0.85;
       }
 
-      /* Personalizzazione mirino nativo MindAR */
-      .mindar-ui-scanning {
-        z-index: 1000 !important;
+      /* MIRINO PERSONALIZZATO (4 ANGOLI BIANCHI) */
+      #custom-scanner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 260px;
+        height: 260px;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 999;
+        box-sizing: border-box;
+      }
+
+      .corner {
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        border-color: #ffffff;
+        border-style: solid;
+      }
+
+      .top-left {
+        top: 0;
+        left: 0;
+        border-width: 4px 0 0 4px;
+      }
+
+      .top-right {
+        top: 0;
+        right: 0;
+        border-width: 4px 4px 0 0;
+      }
+
+      .bottom-left {
+        bottom: 0;
+        left: 0;
+        border-width: 0 0 4px 4px;
+      }
+
+      .bottom-right {
+        bottom: 0;
+        right: 0;
+        border-width: 0 4px 4px 0;
       }
     </style>
   </head>
   <body>
-    <!-- Intestazione personalizzata come nell'esempio -->
+    <!-- Banner in alto -->
     <div id="header-banner">
       <h1>GEDINFO PIACENZA</h1>
       <p>Realtà Aumentata Ufficiale</p>
     </div>
 
-    <!-- Scena AR con mirino attivato (uiScanning: yes) -->
+    <!-- Frame di scansione grafico (Angoli Bianchi) -->
+    <div id="custom-scanner">
+      <div class="corner top-left"></div>
+      <div class="corner top-right"></div>
+      <div class="corner bottom-left"></div>
+      <div class="corner bottom-right"></div>
+    </div>
+
+    <!-- Scena AR -->
     <a-scene
-      mindar-image="imageTargetSrc: ./targets.mind; uiLoading: no; uiError: no; uiScanning: yes;"
+      mindar-image="imageTargetSrc: ./targets.mind; uiLoading: no; uiError: no; uiScanning: no;"
       color-space="sRGB"
       renderer="colorManagement: true, physicallyCorrectLights"
       vr-mode-ui="enabled: false"
@@ -68,8 +116,8 @@
     >
       <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse" raycaster="far: 10000; objects: .clickable"></a-camera>
 
-      <a-entity mindar-image-target="targetIndex: 0">
-        <!-- Pulsante 3D che appare sopra il logo -->
+      <a-entity id="target-entity" mindar-image-target="targetIndex: 0">
+        <!-- Pulsante 3D -->
         <a-plane
           class="clickable"
           id="ar-button"
@@ -93,6 +141,19 @@
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const arButton = document.querySelector("#ar-button");
+        const customScanner = document.querySelector("#custom-scanner");
+        const targetEntity = document.querySelector("#target-entity");
+
+        // Nasconde il mirino quando il logo viene rilevato
+        targetEntity.addEventListener("targetFound", () => {
+          customScanner.style.display = "none";
+        });
+
+        // Mostra di nuovo il mirino se si perde il logo
+        targetEntity.addEventListener("targetLost", () => {
+          customScanner.style.display = "block";
+        });
+
         if (arButton) {
           arButton.addEventListener("click", () => {
             window.location.href = "https://www.gedinfo.it/";
