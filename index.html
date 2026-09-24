@@ -3,9 +3,9 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <title>Gedinfo Piacenza - AR Experience</title>
-    <!-- Libreria A-Frame -->
+    <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <!-- Libreria MindAR per A-Frame -->
+    <!-- MindAR per A-Frame -->
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
     <style>
@@ -13,6 +13,16 @@
         margin: 0;
         overflow: hidden;
       }
+      
+      /* FORZA IL NASCONDIMENTO DELLA ROTELLA D'ATTESA DI MINDAR */
+      .mindar-ui-loading {
+        display: none !important;
+      }
+      .mindar-ui-overlay {
+        display: none !important;
+      }
+
+      /* Messaggio personalizzato */
       #scanning-overlay {
         position: absolute;
         top: 20px;
@@ -33,7 +43,6 @@
   <body>
     <div id="scanning-overlay">Inquadra il logo Gedinfo per attivare l'AR</div>
 
-    <!-- Scena AR con uiLoading disabilitato per evitare il blocco del caricamento -->
     <a-scene
       mindar-image="imageTargetSrc: ./targets.mind; uiLoading: no; uiError: no; uiScanning: no;"
       color-space="sRGB"
@@ -41,15 +50,9 @@
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
     >
-      <a-camera
-        position="0 0 0"
-        look-controls="enabled: false"
-        cursor="fuse: false; rayOrigin: mouse"
-        raycaster="far: 10000; objects: .clickable"
-      ></a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse" raycaster="far: 10000; objects: .clickable"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <!-- Pulsante AR -->
         <a-plane
           class="clickable"
           id="ar-button"
@@ -71,6 +74,17 @@
     </a-scene>
 
     <script>
+      // Verifica se il file targets.mind è scaricabile
+      fetch("./targets.mind")
+        .then(response => {
+          if (!response.ok) {
+            alert("ERRORE: Il file targets.mind non è stato trovato su GitHub! Controlla la cartella.");
+          }
+        })
+        .catch(err => {
+          alert("Impossibile caricare il file targets.mind");
+        });
+
       document.addEventListener("DOMContentLoaded", () => {
         const arButton = document.querySelector("#ar-button");
         if (arButton) {
